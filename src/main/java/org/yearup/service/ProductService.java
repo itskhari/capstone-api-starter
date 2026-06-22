@@ -25,8 +25,9 @@ public class ProductService
         return products.stream()
                        .filter(p -> minPrice == null || p.getPrice() >= minPrice)
                        .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
-                       .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
-                       .filter(Product::isFeatured)
+                       .filter(p -> subCategory == null || (p.getSubCategory() != null && subCategory.equalsIgnoreCase(p.getSubCategory())))
+                // removed featured filter, was causing filter to only show featured results.
+                // fixed subcategory from throwing a null pointer exception as well
                        .toList();
     }
 
