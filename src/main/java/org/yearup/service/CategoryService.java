@@ -19,29 +19,35 @@ public class CategoryService
     public List<Category> getAllCategories()
     {
         // get all categories
-        return null;
+        return categoryRepository.findAll();
     }
 
     public Category getById(int categoryId)
     {
         // get category by id
-        return null;
+        return categoryRepository.findById(categoryId).orElseThrow(()
+        -> new RuntimeException("Category not found"));
     }
 
     public Category create(Category category)
     {
         // create a new category
-        return null;
+        return categoryRepository.save(category);
     }
 
     public Category update(int categoryId, Category category)
     {
         // update category and return the updated category
-        return null;
+        Category existing = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+        existing.setName(category.getName());
+
+        return categoryRepository.save(existing);
     }
 
     public void delete(int categoryId)
     {
         // delete category
+        categoryRepository.deleteById(categoryId);
     }
 }
