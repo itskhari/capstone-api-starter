@@ -11,7 +11,7 @@ import org.yearup.service.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/products")
+@RequestMapping("products")
 @CrossOrigin
 public class ProductsController
 {
