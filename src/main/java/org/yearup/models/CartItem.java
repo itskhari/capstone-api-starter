@@ -20,6 +20,12 @@ public class CartItem
     @Column(name = "quantity")
     private int quantity = 1;
 
+    public CartItem(int userId, int productId, int quantity) {
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
     public int getCartItemId()
     {
         return cartItemId;
