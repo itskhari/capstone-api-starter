@@ -33,7 +33,7 @@ public class Order
     private int zip;
 
     @Column (name = "shipping_amount")
-    private double shippingAmount;
+    private double total;
 
     public int getOrderId() {
         return orderId;
@@ -91,12 +91,12 @@ public class Order
         this.zip = zip;
     }
 
-    public double getShippingAmount() {
-        return shippingAmount;
+    public double getTotal() {
+        return total;
     }
 
-    public void setShippingAmount(double shippingAmount) {
-        this.shippingAmount = shippingAmount;
+    public void setTotal(double shippingAmount) {
+        this.total = total;
     }
 }
 

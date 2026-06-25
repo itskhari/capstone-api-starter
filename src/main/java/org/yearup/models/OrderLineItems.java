@@ -19,7 +19,7 @@ public class OrderLineItems {
     private int productId;
 
     @Column (name = "sales_price")
-    private double salesPrice;
+    private double price;
 
     @Column (name = "quantity")
     private int quantity;
@@ -43,12 +43,12 @@ public class OrderLineItems {
         this.quantity = quantity;
     }
 
-    public double getSalesPrice() {
-        return salesPrice;
+    public double getPrice() {
+        return price;
     }
 
-    public void setSalesPrice(double salesPrice) {
-        this.salesPrice = salesPrice;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public int getProductId() {
