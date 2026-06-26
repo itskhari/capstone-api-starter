@@ -1,12 +1,10 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
-import org.yearup.models.Order;
-import org.yearup.models.OrderLineItems;
-import org.yearup.models.ShoppingCart;
-import org.yearup.models.ShoppingCartItem;
+import org.yearup.models.*;
 import org.yearup.repository.OrderLineRepository;
 import org.yearup.repository.OrderRepository;
+import org.yearup.repository.ProfileRepository;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -17,11 +15,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineRepository orderLineRepository;
     private final ShoppingCartService shoppingCartService;
+    private final ProfileRepository profileRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderLineRepository orderLineRepository, ShoppingCartService shoppingCartService) {
+    public OrderService(OrderRepository orderRepository, OrderLineRepository orderLineRepository, ShoppingCartService shoppingCartService, ProfileRepository profileRepository) {
         this.orderRepository = orderRepository;
         this.orderLineRepository = orderLineRepository;
         this.shoppingCartService = shoppingCartService;
+        this.profileRepository = profileRepository;
     }
 
     public Order createOrder(int userId) {
@@ -29,10 +29,19 @@ public class OrderService {
 
         Map<Integer, ShoppingCartItem> cartItems = cart.getItems();
 
+        Profile profile = profileRepository.findByUserId(userId);
+        if (profile == null) {
+            throw new RuntimeException("User profile not found for checkout");
+        }
+
         Order order = new Order();
         order.setUserId(userId);
         order.setOrderDate(LocalDateTime.now());
         order.setTotal(cart.getTotal());
+        order.setAddress(profile.getAddress());
+        order.setCity(profile.getCity());
+        order.setState(profile.getState());
+        order.setZip(profile.getZip());
 
         Order savedOrder = orderRepository.save(order);
 

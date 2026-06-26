@@ -30,7 +30,7 @@ public class Order
     private String state;
 
     @Column (name = "zip")
-    private int zip;
+    private String zip;
 
     @Column (name = "shipping_amount")
     private double total;
@@ -83,11 +83,11 @@ public class Order
         this.state = state;
     }
 
-    public int getZip() {
+    public String getZip() {
         return zip;
     }
 
-    public void setZip(int zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 
