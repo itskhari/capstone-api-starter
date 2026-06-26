@@ -18,7 +18,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/orders")
 @CrossOrigin
-@PreAuthorize("Authenticated()")
+@PreAuthorize("isAuthenticated()")
 public class OrderController {
 
     private final OrderService orderService;
