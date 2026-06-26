@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yearup.models.Profile;
 import org.yearup.repository.ProfileRepository;
 
@@ -21,13 +22,13 @@ public class ProfileService
 
     public Profile getByUserId(int userId) { return profileRepository.findByUserId(userId); }
 
+    @Transactional
     public Profile updateProfile(int userId, Profile updatedProfile) {
         Profile existing = profileRepository.findByUserId(userId);
         if (existing == null) {
             throw new RuntimeException("Profile not found" + userId);
         }
 
-        existing.setUserId(updatedProfile.getUserId());
         existing.setFirstName(updatedProfile.getFirstName());
         existing.setLastName(updatedProfile.getLastName());
         existing.setPhone(updatedProfile.getPhone());

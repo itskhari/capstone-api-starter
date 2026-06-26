@@ -34,13 +34,12 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<Profile> updateProfile (@RequestBody Profile requestProfile, Principal principal)
+    public ResponseEntity<Profile> updateProfile (@RequestBody Profile profile, Principal principal)
     {
         String userName = principal.getName();
         User user = userService.getByUserName(userName);
-        int userId = user.getId();
 
-        Profile updated = profileService.updateProfile(userId, requestProfile);
+        Profile updated = profileService.updateProfile(user.getId(), profile);
         return ResponseEntity.ok(updated);
     }
 }
