@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Profile;
 import org.yearup.models.User;
@@ -12,6 +13,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/profile")
 @CrossOrigin
+@PreAuthorize("isAuthenticated()")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -30,6 +32,9 @@ public class ProfileController {
         int userId = user.getId();
 
         Profile profile = profileService.getByUserId(userId);
+        if (profile == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(profile);
     }
 

@@ -26,7 +26,7 @@ public class ProfileService
     public Profile updateProfile(int userId, Profile updatedProfile) {
         Profile existing = profileRepository.findByUserId(userId);
         if (existing == null) {
-            throw new RuntimeException("Profile not found" + userId);
+            throw new RuntimeException("Profile not found " + userId);
         }
 
         existing.setFirstName(updatedProfile.getFirstName());

@@ -23,7 +23,6 @@ public class ProductsController
     }
 
     @GetMapping("")
-    @PreAuthorize("permitAll()")
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) Double minPrice,
                                 @RequestParam(name="maxPrice", required = false) Double maxPrice,
@@ -33,7 +32,6 @@ public class ProductsController
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("permitAll()")
     public Product getById(@PathVariable int id)
     {
         Product product = productService.getById(id);

@@ -14,37 +14,36 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ShoppingCartService
-{
+public class ShoppingCartService {
     // a shopping cart is built from cart rows plus a product lookup for each row
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductService productService;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService)
-    {
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productService = productService;
     }
 
     // add additional methods here
 
-    public ShoppingCart getByUserId(int userId)
-    {
+    public ShoppingCart getByUserId(int userId) {
         // load the user's cart rows, look up each product, and build the ShoppingCart
-            List<CartItem> items = shoppingCartRepository.findByUserId(userId);
+        List<CartItem> items = shoppingCartRepository.findByUserId(userId);
 
-            Map<Integer, ShoppingCartItem> cartItems = new HashMap<>();
+        Map<Integer, ShoppingCartItem> cartItems = new HashMap<>();
 
-            for (CartItem item : items) {
-                Product product = productService.getById(item.getProductId());
-                cartItems.put(item.getProductId(), new ShoppingCartItem(product, item.getQuantity()));
+        for (CartItem item : items) {
+            Product product = productService.getById(item.getProductId());
+            if (product == null) {
+                throw new RuntimeException("Product not found: " + item.getProductId());
             }
+            cartItems.put(item.getProductId(), new ShoppingCartItem(product, item.getQuantity()));
+        }
 
-            return new ShoppingCart(cartItems);
+        return new ShoppingCart(cartItems);
     }
 
-    public ShoppingCart addProduct(int userId , int productId)
-    {
+    public ShoppingCart addProduct(int userId, int productId) {
         CartItem existing = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
 
         if (existing == null) {
@@ -59,9 +58,18 @@ public class ShoppingCartService
 
     }
 
-    public ShoppingCart updateQuantity(int userId, int productId, int quantity)
-    {
+    @Transactional
+    public ShoppingCart updateQuantity(int userId, int productId, int quantity) {
         CartItem item = shoppingCartRepository.findByUserIdAndProductId(userId, productId);
+
+        if (quantity < 1) {
+            throw new RuntimeException("Quantity must be at least 1");
+        }
+
+        Product product = productService.getById(productId);
+        if (product == null) {
+            throw new RuntimeException("Product not found: " + productId);
+        }
 
         if (item == null) {
             throw new RuntimeException("Product not in cart");
@@ -73,14 +81,11 @@ public class ShoppingCartService
         return getByUserId(userId);
     }
 
+
     @Transactional
-    public ShoppingCart clearCart(int userId)
-    {
+    public ShoppingCart clearCart(int userId) {
         shoppingCartRepository.deleteByUserId(userId);
 
         return getByUserId(userId);
     }
-
-
-
 }

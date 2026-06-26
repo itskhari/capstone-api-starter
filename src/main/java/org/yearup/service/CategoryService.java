@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yearup.models.Category;
 import org.yearup.repository.CategoryRepository;
 
@@ -35,6 +36,7 @@ public class CategoryService
         return categoryRepository.save(category);
     }
 
+    @Transactional
     public Category update(int categoryId, Category category)
     {
         // update category and return the updated category
@@ -45,8 +47,12 @@ public class CategoryService
         return categoryRepository.save(existing);
     }
 
+    @Transactional
     public void delete(int categoryId)
     {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new RuntimeException("Category not found");
+        }
         // delete category
         categoryRepository.deleteById(categoryId);
     }

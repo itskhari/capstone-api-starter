@@ -3,6 +3,7 @@ package org.yearup.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.ShoppingCartItem;
@@ -17,6 +18,7 @@ import java.security.Principal;
 @RequestMapping("/cart")
 @CrossOrigin
 // only logged-in users should have access to these actions
+@PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
 {
     // a shopping cart controller depends on the service layer
@@ -53,10 +55,12 @@ public class ShoppingCartController
         User user = userService.getByUserName(userName);
         int userId = user.getId();
 
-        ShoppingCart updatedCart = shoppingCartService.addProduct(userId, productId);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
-
+        try {
+            ShoppingCart updatedCart = shoppingCartService.addProduct(userId, productId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
 
@@ -22,6 +23,7 @@ public class ProductService
                 ? productRepository.findByCategoryId(categoryId)
                 : productRepository.findAll();
 
+        // Bug 1
         return products.stream()
                        .filter(p -> minPrice == null || p.getPrice() >= minPrice)
                        .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
@@ -47,8 +49,10 @@ public class ProductService
         return productRepository.save(product);
     }
 
+    @Transactional
     public Product update(int productId, Product product)
     {
+        // Bug 2
         Product existing = productRepository.findById(productId).orElseThrow();
         existing.setName(product.getName());
         existing.setPrice(product.getPrice());
@@ -61,8 +65,12 @@ public class ProductService
         return productRepository.save(existing);
     }
 
+    @Transactional
     public void delete(int productId)
     {
+        if (!productRepository.existsById(productId)) {
+            throw new RuntimeException("Product not found");
+        }
         productRepository.deleteById(productId);
     }
 }

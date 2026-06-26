@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yearup.models.*;
 import org.yearup.repository.OrderLineRepository;
 import org.yearup.repository.OrderRepository;
@@ -24,6 +25,7 @@ public class OrderService {
         this.profileRepository = profileRepository;
     }
 
+    @Transactional
     public Order createOrder(int userId) {
         ShoppingCart cart = shoppingCartService.getByUserId(userId);
 
