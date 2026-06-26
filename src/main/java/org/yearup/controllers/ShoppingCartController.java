@@ -15,6 +15,7 @@ import java.security.Principal;
 // convert this class to a REST controller
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin
 // only logged-in users should have access to these actions
 public class ShoppingCartController
 {
@@ -44,8 +45,8 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be added)
     // return the updated cart with status 201 Created
-    @PostMapping("products/{id}")
-    public ResponseEntity<ShoppingCart> addProduct(@PathVariable ("id") int productId, @RequestParam Principal principal)
+    @PostMapping("/products/{id}")
+    public ResponseEntity<ShoppingCart> addProduct(@PathVariable ("id") int productId, Principal principal)
     {
         String userName = principal.getName();
 
@@ -62,17 +63,15 @@ public class ShoppingCartController
     // add a PUT method to update an existing product in the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
-    @PutMapping("products/{id}")
-    public ResponseEntity<ShoppingCart> updateQuantity(@PathVariable ("id") int productId, @RequestBody ShoppingCartItem requestItem, Principal principal)
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ShoppingCart> updateQuantity(@PathVariable ("id") int productId, @RequestBody ShoppingCartItem item, Principal principal)
     {
         String userName = principal.getName();
 
         User user = userService.getByUserName(userName);
         int userId = user.getId();
 
-        int quantity = requestItem.getQuantity();
-
-        ShoppingCart updatedCart = shoppingCartService.updateQuantity(userId, productId, quantity);
+        ShoppingCart updatedCart = shoppingCartService.updateQuantity(userId, productId, item.getQuantity());
 
         return ResponseEntity.ok(updatedCart);
 
